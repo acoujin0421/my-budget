@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>예산 출납 관리</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1><span>예산</span> 출납 관리</h1>
+      <p class="subtitle">담당 업무 예산 현황 및 지출 내역 관리</p>
+    </header>
+
+    <main>
+      <div class="layout-two-cols">
+      <!-- 왼쪽: 예산 정보 -->
+      <div class="col-left">
+        <section class="card budget-setup" id="budget-setup">
+          <h2>예산 현황</h2>
+          <p class="hint">예산 항목을 직접 추가하거나, 예시 데이터를 불러와 사용할 수 있습니다.</p>
+          <div class="budget-setup-actions">
+            <button type="button" id="btn-load-example" class="btn-secondary">예시 데이터 불러오기</button>
+          </div>
+          <form id="budget-form">
+            <div class="form-row four">
+              <div class="field">
+                <label for="budget-saup">세부사업</label>
+                <input type="text" id="budget-saup" placeholder="예: 동아리활동">
+              </div>
+              <div class="field">
+                <label for="budget-hangmok">세부항목</label>
+                <input type="text" id="budget-hangmok" placeholder="예: 학교특색교육활동">
+              </div>
+              <div class="field">
+                <label for="budget-bimok">원가통계비목</label>
+                <input type="text" id="budget-bimok" placeholder="예: 교육운영비">
+              </div>
+              <div class="field">
+                <label for="budget-sanchul">산출내역</label>
+                <input type="text" id="budget-sanchul" placeholder="예: 간식비">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field budget-amount-field">
+                <label for="budget-amount">예산 현액 (원)</label>
+                <input type="number" id="budget-amount" min="0" placeholder="0">
+              </div>
+              <div class="field form-actions budget-add-wrap">
+                <button type="submit" id="btn-add-budget">예산 항목 추가</button>
+              </div>
+            </div>
+          </form>
+          <div class="table-wrap budget-table-wrap">
+            <table class="budget-table">
+              <thead>
+                <tr>
+                  <th>세부사업</th>
+                  <th>세부항목</th>
+                  <th>원가통계비목</th>
+                  <th>산출내역</th>
+                  <th>예산 현액</th>
+                  <th>관리</th>
+                </tr>
+              </thead>
+              <tbody id="budget-tbody">
+              </tbody>
+            </table>
+          </div>
+          <p class="empty-msg" id="budget-empty-msg">등록된 예산 항목이 없습니다. 위에서 추가하거나 예시 데이터를 불러오세요.</p>
+        </section>
+      </div>
+
+      <!-- 오른쪽: 예산 선택 + 지출 내역 -->
+      <div class="col-right">
+        <section class="card budget-select">
+          <h2>예산 선택</h2>
+          <p class="hint">세부사업 → 세부항목 → 원가통계비목 → 산출내역 순으로 선택하세요.</p>
+          <div class="cascade">
+            <div class="select-group">
+              <label for="sel-saup">세부사업</label>
+              <select id="sel-saup">
+                <option value="">선택하세요</option>
+              </select>
+            </div>
+            <span class="arrow">→</span>
+            <div class="select-group">
+              <label for="sel-hangmok">세부항목</label>
+              <select id="sel-hangmok" disabled>
+                <option value="">선택하세요</option>
+              </select>
+            </div>
+            <span class="arrow">→</span>
+            <div class="select-group">
+              <label for="sel-bimok">원가통계비목</label>
+              <select id="sel-bimok" disabled>
+                <option value="">선택하세요</option>
+              </select>
+            </div>
+            <span class="arrow">→</span>
+            <div class="select-group">
+              <label for="sel-sanchul">산출내역</label>
+              <select id="sel-sanchul" disabled>
+                <option value="">선택하세요</option>
+              </select>
+            </div>
+          </div>
+          <div class="selected-budget-info" id="selected-budget-info" hidden>
+            <p><strong>선택된 예산</strong></p>
+            <p id="budget-label"></p>
+            <p>예산 현액: <span id="budget-total" class="amount"></span> · 잔액: <span id="budget-remain" class="amount highlight"></span></p>
+          </div>
+        </section>
+
+        <section class="card form-section">
+          <h2>지출 내역 입력</h2>
+          <form id="expense-form">
+            <div class="form-row">
+              <div class="field">
+                <label for="input-pumui-date">품의한 날짜</label>
+                <input type="date" id="input-pumui-date" required>
+              </div>
+              <div class="field">
+                <label for="input-pumui-no">품의 문서 번호</label>
+                <input type="text" id="input-pumui-no" placeholder="예: 2024-001">
+              </div>
+              <div class="field">
+                <label for="input-purchase-date">구매한 날짜</label>
+                <input type="date" id="input-purchase-date" required>
+              </div>
+            </div>
+            <div class="field">
+              <label for="input-detail">구매 내역 (상세)</label>
+              <input type="text" id="input-detail" placeholder="예: 악보대 10개" required>
+            </div>
+            <div class="form-row three">
+              <div class="field">
+                <label for="input-unit-price">단가 (원)</label>
+                <input type="number" id="input-unit-price" min="0" placeholder="0" required>
+              </div>
+              <div class="field">
+                <label for="input-quantity">수량 (개)</label>
+                <input type="number" id="input-quantity" min="1" value="1" required>
+              </div>
+              <div class="field">
+                <label for="input-total">총액 (원)</label>
+                <input type="number" id="input-total" min="0" placeholder="자동 계산" readonly>
+              </div>
+            </div>
+            <input type="hidden" id="input-budget-id">
+            <div class="form-actions">
+              <button type="submit" id="btn-submit">등록</button>
+              <button type="button" id="btn-cancel-edit" hidden>취소</button>
+            </div>
+          </form>
+        </section>
+      </div>
+      </div>
+
+      <!-- 지출 내역 목록: 전체 너비 -->
+      <section class="card list-section list-section-full">
+        <h2>지출 내역 목록</h2>
+        <div class="filter-bar">
+          <label>예산 필터:</label>
+          <select id="filter-budget">
+            <option value="">전체</option>
+          </select>
+        </div>
+        <div class="table-wrap table-wrap-full">
+          <table>
+            <thead>
+              <tr>
+                <th>예산 (산출내역)</th>
+                <th>품의일</th>
+                <th>품의 문서 번호</th>
+                <th>구매일</th>
+                <th>상세</th>
+                <th>단가</th>
+                <th>수량</th>
+                <th>총액</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="expense-tbody">
+            </tbody>
+          </table>
+        </div>
+        <p class="empty-msg" id="empty-msg">등록된 지출 내역이 없습니다.</p>
+      </section>
+    </main>
+
+    <div class="backup-bar">
+      <span class="backup-label">데이터 백업</span>
+      <button type="button" id="btn-backup" class="btn-backup">백업하기</button>
+      <button type="button" id="btn-restore" class="btn-restore">불러오기</button>
+      <input type="file" id="input-restore-file" accept=".json,application/json" hidden>
+    </div>
+
+    <footer>
+      <p>예산 출납 관리 · Made with care by 덩어리쌤(안동진) · 2026</p>
+      <p class="footer-note">데이터는 브라우저에 저장됩니다. 백업 파일로 보관해 두세요.</p>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

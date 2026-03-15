@@ -1,0 +1,637 @@
+/* 예산 출납 관리 - 리디자인 */
+:root {
+  --bg: #f6f5f2;
+  --bg-card: #ffffff;
+  --primary: #0d7377;
+  --primary-hover: #0a5c5f;
+  --primary-soft: #e8f4f4;
+  --accent: #14a89e;
+  --text: #2c2c2c;
+  --text-muted: #6b6b6b;
+  --border: #e8e6e3;
+  --danger: #c53030;
+  --danger-soft: #fff5f5;
+  --warn: #b7791f;
+  --warn-soft: #fffbeb;
+  --success: #0d7377;
+  --success-soft: #e8f4f4;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+}
+
+/* 메인: 위쪽 좌우 분할 + 아래쪽 전체 너비 목록 */
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* 좌우 2단 레이아웃 (PC) */
+.layout-two-cols {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.col-left {
+  flex: 2;
+  min-width: 0;
+}
+
+.col-right {
+  flex: 1;
+  min-width: 0;
+}
+
+.col-left .card,
+.col-right .card {
+  margin-bottom: 20px;
+}
+
+/* 지출 내역 목록: 화면 전체 너비, 가로 스크롤 */
+.list-section-full {
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.table-wrap-full {
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-wrap-full table {
+  min-width: 800px;
+  width: 100%;
+}
+
+/* 헤더 */
+header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+header h1 {
+  margin: 0 0 8px;
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+header h1 span {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+/* 카드 공통 */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+}
+
+.card h2 {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+}
+
+.hint {
+  margin: 0 0 18px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* 초기 예산 입력 */
+.budget-setup-actions {
+  margin-bottom: 20px;
+}
+
+.btn-secondary {
+  padding: 10px 20px;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-sm);
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-secondary:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+.form-row.four .field {
+  min-width: 120px;
+  flex: 1;
+}
+
+.budget-amount-field {
+  max-width: 200px;
+}
+
+.budget-add-wrap {
+  margin-bottom: 0;
+  align-self: flex-end;
+}
+
+.budget-table-wrap {
+  margin-top: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.budget-table {
+  margin: 0;
+}
+
+.budget-table th,
+.budget-table td {
+  padding: 12px 14px;
+  font-size: 0.875rem;
+}
+
+.budget-table thead th {
+  background: #fafaf9;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.budget-table .amount {
+  text-align: right;
+  font-weight: 600;
+  color: var(--text);
+}
+
+#budget-empty-msg.hidden {
+  display: none;
+}
+
+/* 계층 선택 */
+.cascade {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px 16px;
+}
+
+.select-group {
+  flex: 1;
+  min-width: 130px;
+  max-width: 200px;
+}
+
+.select-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.select-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-family: var(--font);
+  background: var(--bg-card);
+  color: var(--text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.select-group select:hover:not(:disabled) {
+  border-color: #b8b5b0;
+}
+
+.select-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(13, 115, 119, 0.12);
+}
+
+.select-group select:disabled {
+  background: #fafaf9;
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.cascade .arrow {
+  color: var(--primary);
+  font-weight: 700;
+  align-self: center;
+  margin-bottom: 10px;
+  opacity: 0.7;
+}
+
+.selected-budget-info {
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: var(--success-soft);
+  border: 1px solid #b8e6e4;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+
+.selected-budget-info p {
+  margin: 6px 0;
+}
+
+.selected-budget-info p:first-child {
+  margin-top: 0;
+}
+
+.amount {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.amount.highlight {
+  color: var(--success);
+}
+
+/* 폼 */
+.form-section .field {
+  margin-bottom: 18px;
+}
+
+.form-section label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.form-section input[type="text"],
+.form-section input[type="number"],
+.form-section input[type="date"] {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-family: var(--font);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-section input:hover {
+  border-color: #b8b5b0;
+}
+
+.form-section input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(13, 115, 119, 0.12);
+}
+
+.form-section input[readonly] {
+  background: #fafaf9;
+  color: var(--text);
+  cursor: default;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.form-row .field {
+  flex: 1;
+  min-width: 140px;
+}
+
+.form-row.three .field {
+  min-width: 100px;
+}
+
+.form-actions {
+  margin-top: 22px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.form-actions button {
+  padding: 11px 24px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: background 0.2s, transform 0.05s;
+}
+
+.form-actions button:active {
+  transform: scale(0.98);
+}
+
+#btn-submit {
+  background: var(--primary);
+  color: #fff;
+}
+
+#btn-submit:hover {
+  background: var(--primary-hover);
+}
+
+#btn-add-budget {
+  background: var(--primary);
+  color: #fff;
+}
+
+#btn-add-budget:hover {
+  background: var(--primary-hover);
+}
+
+#btn-cancel-edit {
+  background: #f0efec;
+  color: var(--text);
+}
+
+#btn-cancel-edit:hover {
+  background: #e5e4e0;
+}
+
+/* 테이블 */
+.filter-bar {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-bar label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.filter-bar select {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-family: var(--font);
+  min-width: 200px;
+  background: var(--bg-card);
+  transition: border-color 0.2s;
+}
+
+.filter-bar select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+thead th {
+  text-align: left;
+  padding: 12px 14px;
+  background: #fafaf9;
+  border-bottom: 2px solid var(--border);
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background: #fafaf9;
+}
+
+td.amount {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.actions-cell {
+  white-space: nowrap;
+}
+
+.actions-cell button {
+  padding: 6px 12px;
+  margin-right: 6px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+  background: #f0efec;
+  color: var(--text);
+  transition: background 0.2s;
+}
+
+.actions-cell button:hover {
+  background: #e5e4e0;
+}
+
+.actions-cell button.edit:hover {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.actions-cell button.delete {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.actions-cell button.delete:hover {
+  background: #fecaca;
+}
+
+.empty-msg {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 32px 24px;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.empty-msg.hidden {
+  display: none;
+}
+
+/* 푸터 */
+/* 데이터 백업 바 */
+.backup-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+  margin-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.backup-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-right: 4px;
+}
+
+.btn-backup,
+.btn-restore {
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-backup {
+  border: 1px solid var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.btn-backup:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-restore {
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+}
+
+.btn-restore:hover {
+  border-color: var(--text-muted);
+  background: #f0efec;
+}
+
+footer {
+  text-align: center;
+  padding-top: 16px;
+  margin-top: 0;
+  border-top: 1px solid var(--border);
+}
+
+footer p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+footer p.footer-note {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+/* 반응형: 좁은 화면에서 세로 배치 */
+@media (max-width: 1000px) {
+  .layout-two-cols {
+    flex-direction: column;
+  }
+
+  .col-left {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .app {
+    padding: 20px 16px 40px;
+  }
+
+  .card {
+    padding: 20px 18px;
+  }
+
+  .cascade .arrow {
+    display: none;
+  }
+
+  .select-group {
+    max-width: 100%;
+  }
+
+  .form-row.four {
+    flex-direction: column;
+  }
+}
