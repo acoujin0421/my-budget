@@ -119,6 +119,13 @@ header h1 span {
   font-weight: 400;
 }
 
+.data-saved-info {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  color: var(--primary);
+  font-weight: 500;
+}
+
 /* 카드 공통 */
 .card {
   background: var(--bg-card);

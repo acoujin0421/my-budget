@@ -28,6 +28,7 @@
 
   const STORAGE_BUDGET = 'budgetItems';
   const STORAGE_EXPENSES = 'expenses';
+  const STORAGE_SAVED_AT = 'dataSavedAt';
 
   // id 부여한 예산 배열 (로컬 저장용, 잔액은 계산)
   let budgetItems = [];
@@ -60,10 +61,36 @@
 
   function saveBudget() {
     localStorage.setItem(STORAGE_BUDGET, JSON.stringify(budgetItems));
+    localStorage.setItem(STORAGE_SAVED_AT, new Date().toISOString());
   }
 
   function saveExpenses() {
     localStorage.setItem(STORAGE_EXPENSES, JSON.stringify(expenses));
+    localStorage.setItem(STORAGE_SAVED_AT, new Date().toISOString());
+  }
+
+  function formatSavedAt(isoString) {
+    if (!isoString) return null;
+    try {
+      const d = new Date(isoString);
+      const y = d.getFullYear();
+      const m = d.getMonth() + 1;
+      const day = d.getDate();
+      const h = d.getHours();
+      const min = d.getMinutes();
+      return y + '년 ' + m + '월 ' + day + '일 ' + (h < 10 ? '0' : '') + h + ':' + (min < 10 ? '0' : '') + min + ' 기준';
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function updateDataSavedDisplay() {
+    const el = $('data-saved-info');
+    if (!el) return;
+    const savedAt = localStorage.getItem(STORAGE_SAVED_AT);
+    const text = formatSavedAt(savedAt);
+    el.textContent = text ? '현재 데이터: ' + text : '저장 시점: 알 수 없음';
+    el.style.display = text ? 'block' : 'block';
   }
 
   function doBackup() {
@@ -97,12 +124,16 @@
         expenses = data.expenses;
         saveBudget();
         saveExpenses();
+        if (data.savedAt) {
+          localStorage.setItem(STORAGE_SAVED_AT, data.savedAt);
+        }
         buildCascade();
         renderBudgetTable();
         renderExpenseList();
         renderFilter();
         onSanchulChange();
         clearForm();
+        updateDataSavedDisplay();
         alert('불러오기가 완료되었습니다.');
       } catch (e) {
         alert('파일을 읽는 중 오류가 났습니다. 올바른 백업 파일인지 확인해 주세요.');
@@ -449,6 +480,7 @@
 
   function init() {
     loadData();
+    updateDataSavedDisplay();
     buildCascade();
     renderBudgetTable();
     $('btn-load-example').addEventListener('click', loadExampleBudget);
