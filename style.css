@@ -1,26 +1,8 @@
-/* 예산 출납 관리 - 리디자인 */
+/* 기본 설정 */
 :root {
-  --bg: #f6f5f2;
-  --bg-card: #ffffff;
-  --primary: #0d7377;
-  --primary-hover: #0a5c5f;
-  --primary-soft: #e8f4f4;
-  --accent: #14a89e;
-  --text: #2c2c2c;
-  --text-muted: #6b6b6b;
-  --border: #e8e6e3;
-  --danger: #c53030;
-  --danger-soft: #fff5f5;
-  --warn: #b7791f;
-  --warn-soft: #fffbeb;
-  --success: #0d7377;
-  --success-soft: #e8f4f4;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
-  --radius: 12px;
-  --radius-sm: 8px;
-  --font: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  --sidebar-left-width: 300px;
+  --sidebar-right-width: 340px;
+  --resize-handle-width: 6px;
 }
 
 * {
@@ -29,616 +11,485 @@
 
 body {
   margin: 0;
-  font-family: var(--font);
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-}
-
-.app {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 32px 24px 48px;
-}
-
-/* 메인: 위쪽 좌우 분할 + 아래쪽 전체 너비 목록 */
-main {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-/* 좌우 2단 레이아웃 (PC) */
-.layout-two-cols {
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-  flex-shrink: 0;
-}
-
-.col-left {
-  flex: 2;
-  min-width: 0;
-}
-
-.col-right {
-  flex: 1;
-  min-width: 0;
-}
-
-.col-left .card,
-.col-right .card {
-  margin-bottom: 20px;
-}
-
-/* 지출 내역 목록: 화면 전체 너비, 가로 스크롤 */
-.list-section-full {
-  width: 100%;
-  margin-top: 8px;
-  margin-bottom: 0;
-}
-
-.table-wrap-full {
-  overflow-x: auto;
-  max-width: 100%;
-  -webkit-overflow-scrolling: touch;
-}
-
-.table-wrap-full table {
-  min-width: 800px;
-  width: 100%;
-}
-
-/* 헤더 */
-header {
-  text-align: center;
-  margin-bottom: 32px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--border);
-}
-
-header h1 {
-  margin: 0 0 8px;
-  font-size: 1.85rem;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.02em;
-}
-
-header h1 span {
-  color: var(--primary);
-  font-weight: 700;
-}
-
-.subtitle {
-  margin: 0;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  font-weight: 400;
-}
-
-.data-saved-info {
-  margin: 10px 0 0;
-  font-size: 0.85rem;
-  color: var(--primary);
-  font-weight: 500;
-}
-
-/* 카드 공통 */
-.card {
-  background: var(--bg-card);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 24px 28px;
-  margin-bottom: 24px;
-  border: 1px solid var(--border);
-}
-
-.card h2 {
-  margin: 0 0 6px;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.01em;
-  padding-bottom: 12px;
-  border-bottom: 2px solid var(--border);
-}
-
-.hint {
-  margin: 0 0 18px;
-  font-size: 0.85rem;
-  color: var(--text-muted);
+  font-family: "Pretendard", "Apple SD Gothic Neo", system-ui, -apple-system, sans-serif;
+  background: #eef1f6;
+  color: #1a1a2e;
+  font-size: 14px;
   line-height: 1.5;
 }
 
-/* 초기 예산 입력 */
-.budget-setup-actions {
-  margin-bottom: 20px;
-}
-
-.btn-secondary {
-  padding: 10px 20px;
-  border: 1px solid var(--primary);
-  border-radius: var(--radius-sm);
-  background: var(--primary-soft);
-  color: var(--primary);
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: var(--font);
-  transition: background 0.2s, color 0.2s;
-}
-
-.btn-secondary:hover {
-  background: var(--primary);
-  color: #fff;
-}
-
-.form-row.four .field {
-  min-width: 120px;
-  flex: 1;
-}
-
-.budget-amount-field {
-  max-width: 200px;
-}
-
-.budget-add-wrap {
-  margin-bottom: 0;
-  align-self: flex-end;
-}
-
-.budget-table-wrap {
-  margin-top: 20px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-}
-
-.budget-table {
-  margin: 0;
-}
-
-.budget-table th,
-.budget-table td {
-  padding: 12px 14px;
-  font-size: 0.875rem;
-}
-
-.budget-table thead th {
-  background: #fafaf9;
-  font-weight: 600;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.budget-table .amount {
-  text-align: right;
-  font-weight: 600;
-  color: var(--text);
-}
-
-#budget-empty-msg.hidden {
-  display: none;
-}
-
-/* 계층 선택 */
-.cascade {
+/* 3단 레이아웃 (리사이즈 가능) */
+.app {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 10px 16px;
+  min-height: 100vh;
 }
 
-.select-group {
-  flex: 1;
-  min-width: 130px;
-  max-width: 200px;
-}
-
-.select-group label {
-  display: block;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  margin-bottom: 6px;
-}
-
-.select-group select {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 0.9rem;
-  font-family: var(--font);
-  background: var(--bg-card);
-  color: var(--text);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.select-group select:hover:not(:disabled) {
-  border-color: #b8b5b0;
-}
-
-.select-group select:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(13, 115, 119, 0.12);
-}
-
-.select-group select:disabled {
-  background: #fafaf9;
-  color: var(--text-muted);
-  cursor: not-allowed;
-}
-
-.cascade .arrow {
-  color: var(--primary);
-  font-weight: 700;
-  align-self: center;
-  margin-bottom: 10px;
-  opacity: 0.7;
-}
-
-.selected-budget-info {
-  margin-top: 20px;
-  padding: 16px 20px;
-  background: var(--success-soft);
-  border: 1px solid #b8e6e4;
-  border-radius: var(--radius-sm);
-  font-size: 0.9rem;
-}
-
-.selected-budget-info p {
-  margin: 6px 0;
-}
-
-.selected-budget-info p:first-child {
-  margin-top: 0;
-}
-
-.amount {
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-.amount.highlight {
-  color: var(--success);
-}
-
-/* 폼 */
-.form-section .field {
-  margin-bottom: 18px;
-}
-
-.form-section label {
-  display: block;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--text);
-  margin-bottom: 6px;
-}
-
-.form-section input[type="text"],
-.form-section input[type="number"],
-.form-section input[type="date"] {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 0.95rem;
-  font-family: var(--font);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.form-section input:hover {
-  border-color: #b8b5b0;
-}
-
-.form-section input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(13, 115, 119, 0.12);
-}
-
-.form-section input[readonly] {
-  background: #fafaf9;
-  color: var(--text);
-  cursor: default;
-}
-
-.form-row {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.form-row .field {
-  flex: 1;
-  min-width: 140px;
-}
-
-.form-row.three .field {
-  min-width: 100px;
-}
-
-.form-actions {
-  margin-top: 22px;
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.form-actions button {
-  padding: 11px 24px;
-  border: none;
-  border-radius: var(--radius-sm);
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: var(--font);
-  transition: background 0.2s, transform 0.05s;
-}
-
-.form-actions button:active {
-  transform: scale(0.98);
-}
-
-#btn-submit {
-  background: var(--primary);
-  color: #fff;
-}
-
-#btn-submit:hover {
-  background: var(--primary-hover);
-}
-
-#btn-add-budget {
-  background: var(--primary);
-  color: #fff;
-}
-
-#btn-add-budget:hover {
-  background: var(--primary-hover);
-}
-
-#btn-cancel-edit {
-  background: #f0efec;
-  color: var(--text);
-}
-
-#btn-cancel-edit:hover {
-  background: #e5e4e0;
-}
-
-/* 테이블 */
-.filter-bar {
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.filter-bar label {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-muted);
-}
-
-.filter-bar select {
-  padding: 8px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 0.9rem;
-  font-family: var(--font);
+.sidebar.left {
+  width: var(--sidebar-left-width);
   min-width: 200px;
-  background: var(--bg-card);
-  transition: border-color 0.2s;
+  max-width: 480px;
+  flex-shrink: 0;
 }
 
-.filter-bar select:focus {
-  outline: none;
-  border-color: var(--primary);
+.sidebar.right {
+  width: var(--sidebar-right-width);
+  min-width: 260px;
+  max-width: 520px;
+  flex-shrink: 0;
 }
 
-.table-wrap {
-  overflow-x: auto;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
+/* 리사이즈 핸들 */
+.resize-handle {
+  width: var(--resize-handle-width);
+  flex-shrink: 0;
+  background: transparent;
+  cursor: col-resize;
+  position: relative;
+  transition: background 0.15s;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
+.resize-handle:hover,
+.resize-handle.active {
+  background: rgba(74, 144, 217, 0.2);
 }
 
-thead th {
-  text-align: left;
-  padding: 12px 14px;
-  background: #fafaf9;
-  border-bottom: 2px solid var(--border);
-  font-weight: 600;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+.resize-handle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 32px;
+  background: #c5cdd9;
+  border-radius: 1px;
+  opacity: 0;
+  transition: opacity 0.15s;
 }
 
-tbody td {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--border);
+.resize-handle:hover::after,
+.resize-handle.active::after {
+  opacity: 1;
 }
 
-tbody tr:last-child td {
-  border-bottom: none;
-}
-
-tbody tr:hover {
-  background: #fafaf9;
-}
-
-td.amount {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  font-weight: 500;
-}
-
-.actions-cell {
-  white-space: nowrap;
-}
-
-.actions-cell button {
-  padding: 6px 12px;
-  margin-right: 6px;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: var(--font);
-  background: #f0efec;
-  color: var(--text);
-  transition: background 0.2s;
-}
-
-.actions-cell button:hover {
-  background: #e5e4e0;
-}
-
-.actions-cell button.edit:hover {
-  background: var(--primary-soft);
-  color: var(--primary);
-}
-
-.actions-cell button.delete {
-  background: var(--danger-soft);
-  color: var(--danger);
-}
-
-.actions-cell button.delete:hover {
-  background: #fecaca;
-}
-
-.empty-msg {
-  text-align: center;
-  color: var(--text-muted);
-  padding: 32px 24px;
-  margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.6;
-}
-
-.empty-msg.hidden {
-  display: none;
-}
-
-/* 푸터 */
-/* 데이터 백업 바 */
-.backup-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 0;
-  margin-top: 24px;
-  border-top: 1px solid var(--border);
-  flex-wrap: wrap;
-}
-
-.backup-label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  margin-right: 4px;
-}
-
-.btn-backup,
-.btn-restore {
-  padding: 8px 18px;
-  border-radius: var(--radius-sm);
-  font-size: 0.9rem;
-  font-weight: 600;
-  font-family: var(--font);
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
-}
-
-.btn-backup {
-  border: 1px solid var(--primary);
-  background: var(--primary-soft);
-  color: var(--primary);
-}
-
-.btn-backup:hover {
-  background: var(--primary);
-  color: #fff;
-}
-
-.btn-restore {
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  color: var(--text);
-}
-
-.btn-restore:hover {
-  border-color: var(--text-muted);
-  background: #f0efec;
-}
-
-footer {
-  text-align: center;
-  padding-top: 16px;
-  margin-top: 0;
-  border-top: 1px solid var(--border);
-}
-
-footer p {
-  margin: 0;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-footer p.footer-note {
-  margin-top: 6px;
-  font-size: 0.75rem;
-  opacity: 0.85;
-}
-
-/* 반응형: 좁은 화면에서 세로 배치 */
-@media (max-width: 1000px) {
-  .layout-two-cols {
-    flex-direction: column;
-  }
-
-  .col-left {
-    flex: 1 1 auto;
-    width: 100%;
-  }
-}
-
-@media (max-width: 700px) {
+@media (max-width: 1200px) {
   .app {
-    padding: 20px 16px 40px;
+    flex-wrap: wrap;
   }
 
-  .card {
-    padding: 20px 18px;
-  }
-
-  .cascade .arrow {
+  .resize-handle {
     display: none;
   }
 
-  .select-group {
-    max-width: 100%;
+  .sidebar.left,
+  .sidebar.right {
+    width: 100%;
+    max-width: none;
   }
+}
 
-  .form-row.four {
-    flex-direction: column;
-  }
+/* 사이드바 공통 */
+.sidebar {
+  background: #fff;
+  border-right: 1px solid #e2e6ee;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 1px 0 0 rgba(255, 255, 255, 0.8) inset;
+}
+
+.sidebar.right {
+  border-right: none;
+  border-left: 1px solid #e2e6ee;
+  box-shadow: -1px 0 0 rgba(255, 255, 255, 0.8) inset;
+}
+
+.sidebar-header {
+  padding: 16px 18px;
+  border-bottom: 1px solid #e8eaf0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.btn-add {
+  padding: 6px 14px;
+  border: 1px solid #4a90d9;
+  background: #fff;
+  color: #4a90d9;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-add:hover {
+  background: #4a90d9;
+  color: #fff;
+}
+
+/* 왼쪽: 예산 네비게이션 - 가독성 향상 */
+.budget-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 14px;
+}
+
+.budget-item {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  text-align: left;
+  border: 1px solid #e4e8f0;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.budget-item:hover {
+  border-color: #4a90d9;
+  box-shadow: 0 3px 12px rgba(74, 144, 217, 0.12);
+}
+
+.budget-item.active {
+  border-color: #4a90d9;
+  background: #f5f9ff;
+  box-shadow: 0 2px 8px rgba(74, 144, 217, 0.1);
+}
+
+.budget-item .name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #2d3748;
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
+/* 예산 금액 가독성 강화 */
+.budget-item .balance {
+  font-size: 17px;
+  font-weight: 800;
+  color: #1b5e20;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.budget-item .balance.negative {
+  color: #b71c1c;
+}
+
+/* 가운데: 대시보드 */
+.dashboard {
+  flex: 1;
+  min-width: 0;
+  background: #f5f7fa;
+  overflow-y: auto;
+  padding: 28px 32px;
+}
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  color: #64748b;
+  font-size: 15px;
+}
+
+.dashboard-content {
+  max-width: 860px;
+}
+
+.dashboard-header {
+  margin-bottom: 28px;
+}
+
+.dashboard-header h1 {
+  margin: 0 0 20px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  line-height: 1.5;
+}
+
+.budget-summary {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.summary-item {
+  padding: 16px 24px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e4e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.summary-item .label {
+  display: block;
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.summary-item .value {
+  font-size: 20px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.summary-item .value.spent {
+  color: #b71c1c;
+}
+
+.summary-item.highlight .value {
+  color: #1b5e20;
+}
+
+.summary-item .value.negative {
+  color: #b71c1c !important;
+}
+
+.dashboard-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.expense-logs h3 {
+  margin: 0 0 14px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.expense-table-wrap {
+  background: #fff;
+  border: 1px solid #e4e8f0;
+  border-radius: 12px;
+  overflow-x: auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.expense-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.expense-table th,
+.expense-table td {
+  padding: 14px 18px;
+  text-align: left;
+  border-bottom: 1px solid #f1f3f7;
+}
+
+.expense-table th {
+  font-weight: 600;
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.expense-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.expense-table .btn-icon {
+  padding: 6px 10px;
+  border: none;
+  background: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.expense-table .btn-icon:hover {
+  color: #b71c1c;
+  background: #fef2f2;
+}
+
+.expense-logs .hint {
+  color: #64748b;
+  margin-top: 14px;
+}
+
+/* 오른쪽: 지출 입력 폼 */
+.expense-form {
+  flex: 1;
+  padding: 18px;
+  overflow-y: auto;
+}
+
+.expense-form label {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.expense-form label span {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.expense-form input,
+.expense-form select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #d8dce6;
+  border-radius: 10px;
+  font-size: 14px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.expense-form input:focus,
+.expense-form select:focus {
+  outline: none;
+  border-color: #4a90d9;
+  box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.15);
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.status {
+  margin-top: 14px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.status.error {
+  color: #b71c1c;
+}
+
+.status.success {
+  color: #1b5e20;
+}
+
+/* 버튼 */
+.btn-primary {
+  padding: 11px 20px;
+  background: #4a90d9;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background: #3a7bc8;
+}
+
+.btn-secondary {
+  padding: 9px 16px;
+  background: #fff;
+  color: #475569;
+  border: 1px solid #d8dce6;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-secondary:hover {
+  background: #f8fafc;
+  border-color: #c5cdd9;
+}
+
+.btn-danger {
+  padding: 9px 16px;
+  background: #fff;
+  color: #b71c1c;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-danger:hover {
+  background: #fef2f2;
+}
+
+/* 모달 */
+dialog {
+  border: none;
+  border-radius: 14px;
+  padding: 0;
+  max-width: 90vw;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+}
+
+dialog::backdrop {
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.modal-form {
+  padding: 28px 32px;
+  min-width: 420px;
+}
+
+.modal-form h3 {
+  margin: 0 0 24px 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.modal-form label {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.modal-form label span {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.modal-form input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #d8dce6;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 28px;
 }
