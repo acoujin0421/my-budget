@@ -273,11 +273,29 @@ cancelExpenseEdit.addEventListener("click", () => {
   render();
 });
 
+// 예산 폼 드롭다운(기존 예산 참고) 채우기
+function fillBudgetDatalists() {
+  const fields = ["세부사업", "세부항목", "원가통계비목", "산출내역"];
+  fields.forEach((f) => {
+    const listId = "datalist" + f;
+    const key = f;
+    const values = [...new Set(state.budgets.map((b) => b[key]).filter(Boolean))].sort();
+    const dl = document.getElementById(listId);
+    dl.innerHTML = "";
+    values.forEach((v) => {
+      const opt = document.createElement("option");
+      opt.value = v;
+      dl.appendChild(opt);
+    });
+  });
+}
+
 // 예산 추가 모달
 addBudgetBtn.addEventListener("click", () => {
   budgetModalTitle.textContent = "예산 추가";
   budgetForm.reset();
   budgetForm.dataset.editId = "";
+  fillBudgetDatalists();
   budgetModal.showModal();
 });
 
@@ -298,6 +316,7 @@ editBudgetBtn.addEventListener("click", () => {
   document.getElementById("budget산출내역").value = b.산출내역 || "";
   document.getElementById("budget기정예산").value = b.기정예산 ?? "";
   budgetForm.dataset.editId = b.id;
+  fillBudgetDatalists();
   budgetModal.showModal();
 });
 
@@ -338,8 +357,10 @@ budgetForm.addEventListener("submit", async (e) => {
     state.budgets.push({ id: id(), ...item });
   }
 
-  const ok = await saveToServer();
-  if (ok) budgetModal.close();
+  await saveToServer();
+  const msg = editId ? "예산이 수정되었습니다." : "예산이 추가되었습니다.";
+  alert(msg);
+  budgetModal.close();
   render();
 });
 

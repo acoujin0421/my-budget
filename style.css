@@ -466,6 +466,12 @@ dialog::backdrop {
   font-weight: 600;
 }
 
+.modal-form .modal-hint {
+  margin: -8px 0 16px 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
 .modal-form label {
   display: block;
   margin-bottom: 16px;

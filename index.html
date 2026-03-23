@@ -117,21 +117,26 @@
     <dialog id="budgetModal">
       <form id="budgetForm" class="modal-form">
         <h3 id="budgetModalTitle">예산 추가</h3>
+        <p class="modal-hint">기존 예산을 참고해 선택하거나 새로 입력할 수 있습니다.</p>
         <label>
           <span>세부사업</span>
-          <input type="text" id="budget세부사업" required />
+          <input type="text" id="budget세부사업" list="datalist세부사업" required autocomplete="off" />
+          <datalist id="datalist세부사업"></datalist>
         </label>
         <label>
           <span>세부항목</span>
-          <input type="text" id="budget세부항목" required />
+          <input type="text" id="budget세부항목" list="datalist세부항목" required autocomplete="off" />
+          <datalist id="datalist세부항목"></datalist>
         </label>
         <label>
           <span>원가통계비목</span>
-          <input type="text" id="budget원가통계비목" required />
+          <input type="text" id="budget원가통계비목" list="datalist원가통계비목" required autocomplete="off" />
+          <datalist id="datalist원가통계비목"></datalist>
         </label>
         <label>
           <span>산출내역</span>
-          <input type="text" id="budget산출내역" required />
+          <input type="text" id="budget산출내역" list="datalist산출내역" required autocomplete="off" />
+          <datalist id="datalist산출내역"></datalist>
         </label>
         <label>
           <span>기정 예산 (원)</span>
