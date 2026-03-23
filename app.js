@@ -1,5 +1,5 @@
 // ★ Vercel 배포 후 이 URL을 본인 API 주소로 바꿔주세요.
-const API_URL = "https://여기에-vercel-프로젝트주소.vercel.app/api/save";
+const API_URL = "https://my-budget-nine-alpha.vercel.app/api/save";
 
 // 상태
 let state = { budgets: [], expenses: [], selectedBudgetId: null, editingExpenseId: null };
